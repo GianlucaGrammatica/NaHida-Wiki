@@ -1,5 +1,5 @@
-import { QuartzConfig } from "./quartz/cfg";
-import * as Plugin from "./quartz/plugins";
+import { QuartzConfig } from "./quartz/cfg"
+import * as Plugin from "./quartz/plugins"
 
 /**
  * Quartz 4 Configuration
@@ -8,8 +8,8 @@ import * as Plugin from "./quartz/plugins";
  */
 const config: QuartzConfig = {
   configuration: {
-    pageTitle: "Rubrichette Wiki",
-    pageTitleSuffix: " | Rubrichette Wiki",
+    pageTitle: "NaHida Wiki",
+    pageTitleSuffix: " | NaHida Wiki",
     enableSPA: true,
     enablePopovers: true,
     analytics: {
@@ -23,32 +23,32 @@ const config: QuartzConfig = {
       fontOrigin: "googleFonts",
       cdnCaching: true,
       typography: {
-        header: "Nunito",
-        body: "Nunito",
+        header: "Balsamiq Sans",
+        body: "Balsamiq Sans",
         code: "IBM Plex Mono",
       },
       colors: {
         lightMode: {
-          light: "#fff5f7",
-          lightgray: "#fde0e6",
-          gray: "#f0a0b0",
-          darkgray: "#5a3a3a",
-          dark: "#3a1a1a",
-          secondary: "#d4607a",
-          tertiary: "#f0a0b0",
-          highlight: "rgba(212, 96, 122, 0.10)",
-          textHighlight: "#f9c4cf88",
+          light: "#F5F0E8", // --color-base-100 (Sfondo principale)
+          lightgray: "#EAE2D5", // --color-base-200 (Bordi dei blocchi di codice, griglie)
+          gray: "#DDD3C0", // --color-base-300 (Grafi, divisori pesanti)
+          darkgray: "#4A3728", // --color-neutral (Testo del corpo/secondario)
+          dark: "#1A1410", // --color-base-content (Titoli e testo principale)
+          secondary: "#5A7A3A", // --color-primary (Link, titoli dei nodi, colore principale)
+          tertiary: "#9EBB5C", // --color-accent (Stato hover dei link, nodi del grafo)
+          highlight: "rgba(90, 122, 58, 0.12)", // --color-primary con opacità (sfondo righe codice/ricerca)
+          textHighlight: "rgba(158, 187, 92, 0.4)", // --color-accent con opacità (evidenziatore di testo ==mark==)
         },
         darkMode: {
-          light: "#1e1215",
-          lightgray: "#3a2028",
-          gray: "#7a4a55",
-          darkgray: "#f0d0d5",
-          dark: "#fdeef0",
-          secondary: "#f08090",
-          tertiary: "#c06070",
-          highlight: "rgba(240, 128, 144, 0.15)",
-          textHighlight: "#c0607088",
+          light: "#1C1810", // --color-base-100 (Sfondo scuro principale)
+          lightgray: "#261F14", // --color-base-200 (Bordi e linee)
+          gray: "#32281A", // --color-base-300 (Grafi e separatori)
+          darkgray: "#C8B89A", // --color-neutral (Testo del corpo)
+          dark: "#E8DFD0", // --color-base-content (Titoli e testo ad alto contrasto)
+          secondary: "#7AAA4A", // --color-primary (Link e interazioni principali)
+          tertiary: "#C4DC88", // --color-accent (Hover e nodi attivi)
+          highlight: "rgba(122, 170, 74, 0.15)", // --color-primary con opacità
+          textHighlight: "rgba(196, 220, 136, 0.3)", // --color-accent con opacità
         },
       },
     },
@@ -92,6 +92,6 @@ const config: QuartzConfig = {
       Plugin.CustomOgImages(),
     ],
   },
-};
+}
 
-export default config;
+export default config

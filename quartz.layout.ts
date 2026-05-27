@@ -8,8 +8,8 @@ export const sharedPageComponents: SharedLayout = {
   afterBody: [],
   footer: Component.Footer({
     links: {
-      "Wiki non ufficiale di Rubrichette":
-        "https://www.youtube.com/@EdoardoZaggia",
+      "NaHida  Progetto IoT":
+        "https://nahida-0dsp.onrender.com/",
     },
   }),
 };

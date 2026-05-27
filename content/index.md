@@ -1,40 +1,31 @@
----
-title: Home
----
-# 📺 Rubrichette Wiki
+# 🌿 NaHida • Smart Plant Monitor
 
-Wiki non ufficiale di **Rubrichette**, lo show di [Edoardo Zaggia](https://www.youtube.com/@EdoardoZaggia) e Alberto Sacco.
+> **Progetto IoT per il monitoraggio intelligente delle piante, sviluppato da Colombara e Grammatica.**  
 
 ---
-
-## Navigazione
-
-| Sezione | Descrizione |
-|---|---|
-| 📺 [[Puntate/]] | Tutte le 154 puntate |
-| 📌 [[Rubriche/]] | Le rubriche ricorrenti |
-| 👤 [[Personaggi/]] | I personaggi del mondo di Rubrichette |
+![[NaHida_Logo.png]]
+## Cos'è NaHida
+NaHida è un sistema di monitoraggio intelligente per piante d'appartamento. Un dispositivo **ESP8266** legge i sensori ambientali e li trasmette via **MQTT** a un server **Laravel**, che li salva nel database e li mostra in tempo reale su una **PWA** con personaggio Live2D interattivo.
 
 ---
 
-## Ultime puntate aggiunte
-- [[Puntata 001]]
-- [[Puntata 002]]
+## Stack tecnologico
+
+| Layer            | Tecnologia                                 |
+| ---------------- | ------------------------------------------ |
+| Microcontrollore | ESP8266 + PlatformIO                       |
+| Broker MQTT      | HiveMQ Cloud (TLS, porta 8883)             |
+| Backend          | Laravel 11 + PHP                           |
+| WebSocket        | Laravel Reverb                             |
+| Frontend         | Blade + Alpine.js + DaisyUI + Tailwind CSS |
+| Database         | MySQL                                      |
+| Modello 2D       | Live2D Cubism SDK (pixi-live2d-display)    |
 
 ---
-
-## Statistiche
-- **Puntate totali:** 154
-- **Puntate documentate:** 2
-- **Rubriche ricorrenti:** 0
-- **Personaggi:** 0
-
----
-
-## Come usare questa wiki
-
-1. Ogni **puntata** ha la sua pagina con sigla, frase di benvenuto, riassunto rubriche e chiosa finale
-2. Le **rubriche ricorrenti** hanno una pagina dedicata con tutte le apparizioni
-3. I **personaggi** hanno una pagina individuale con descrizione e apparizioni
-4. Usa i link `[[...]]` per navigare tra le pagine come Wikipedia
-5. I **tag** (`puntata`, `rubrica`, `personaggio`) permettono di filtrare i contenuti
+## Indice
+- [[Overview del progetto]]
+- [[Funzionalità e flusso]]
+- [[Database]]
+- [[Web App]]
+- [[Hardware e Firmware ESP]]
+- [[Modello Live2D]]
