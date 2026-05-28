@@ -1,3 +1,4 @@
+![[NaHida_Picture_1.jpg]]
 ## Schema Circuitale e Assegnazione Pin
 Data la complessità e la varietà dei moduli impiegati, lo schema elettrico è documentato tramite la seguente tabella di mappatura dei pin (Pinout) e la descrizione analitica dei collegamenti. Il sistema è basato su un microcontrollore ESP8266 (NodeMCU).
 
