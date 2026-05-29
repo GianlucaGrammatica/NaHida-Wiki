@@ -1,3 +1,4 @@
+![[NaHida_Picture_3.jpg]]
 ## Stack tecnologico
 Il backend è costruito su **Laravel 12**, un framework PHP che segue il pattern MVC e fornisce out of the box un sistema di routing, ORM, autenticazione, validazione e gestione degli eventi. Il server web usato in sviluppo è **Laravel Herd** con PHP 8.3.
 

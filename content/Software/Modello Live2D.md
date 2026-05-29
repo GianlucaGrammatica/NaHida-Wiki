@@ -36,3 +36,5 @@ Un dettaglio d'interazione avanzato è stato inserito nella pagina di Login e Re
 - Quando l'utente seleziona il campo password, viene attivata la funzione `PlantViewer.setPasswordMode(true)`. Il modello Live2D reagisce chiudendo gli occhi o coprendosi il volto (attivando il parametro `ClosedEyes` o modificando la direzione dello sguardo), simulando l'atto di "non guardare" la chiave segreta che si sta digitando.
 #### 4. Animazione di Annaffiatura (Motions)
 Quando l'utente esegue un'azione rapida dall'interfaccia web o preme il pulsante fisico sul dispositivo ESP8266, il server invia una notifica in tempo reale al frontend. Questo trigger attiva la funzione `playWatering()`, che forza l'esecuzione della motion `Watering` memorizzata nel file del modello, mostrando l'animazione della pianta che riceve l'acqua.
+
+![[NaHida_Picture_4.png]]

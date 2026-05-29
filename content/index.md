@@ -29,3 +29,8 @@ NaHida è un sistema di monitoraggio intelligente per piante d'appartamento. Un 
 - [[Web App]]
 - [[Hardware e Firmware ESP]]
 - [[Modello Live2D]]
+## Link Utili
+- [Repositoy Web App](https://github.com/arco2121/NaHida)
+- [Repository Framework ESP](https://github.com/GianlucaGrammatica/NaHida-ESP-Config)
+- [Demo Video](https://www.youtube.com/watch?v=0ceM744z58M)
+- [Web App Online](https://nahida-0dsp.onrender.com/)

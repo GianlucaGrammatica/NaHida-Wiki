@@ -18,6 +18,8 @@ Data la complessità e la varietà dei moduli impiegati, lo schema elettrico è 
 |**GND**|Massa Comune|Power|Riferimento di massa comune per tutti i componenti del circuito.|
 
 >**Nota sui collegamenti audio:** Il DFPlayer Mini pilota direttamente lo speaker da 0.5W 8Ω tramite i pin dedicati `SPK_1` (positivo) e `SPK_2` (negativo).
+
+![[NaHida_Picture_2.jpg]]
 ## Componentistica e Scelte Tecniche
 L'infrastruttura hardware è stata selezionata per garantire affidabilità nella lettura dei dati e un'interazione utente immersiva:
 - **ESP8266 (NodeMCU):** Microcontrollore principale scelto per il modulo WiFi integrato e l'adeguato numero di pin GPIO, ideale per progetti IoT a basso costo.
