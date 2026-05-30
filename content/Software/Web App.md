@@ -20,6 +20,7 @@ I controller principali sono:
 - `PlantsController`: gestisce la lista, il dettaglio, la creazione e la modifica delle piante, lo storico e le ultime letture
 - `DeviceController`:  gestisce il collegamento e lo scollegamento dei dispositivi e pubblica comandi MQTT verso l'ESP (configurazione, musica, LED)
 - `ProfileController` e `SettingsController`: gestione del profilo utente e delle impostazioni
+Vedi i dettagli dei controller in [[Laravel plants controller]]
 
 Una funzione helper globale `renderPage()` definita in `routes/functions.php` uniforma il passaggio dei dati alle view Blade, serializzando i parametri anche in un meta tag `params` accessibile lato JavaScript.
 
@@ -45,6 +46,8 @@ Ogni pagina ha un file JavaScript dedicato in `resources/js/pages/`. La pagina d
 I grafici mostrano le ultime 50 letture per quattro metriche (temperatura, umidità aria, umidità suolo, luminosità) con linee tratteggiate che indicano i range ottimali configurati per quella pianta. I dati vengono aggiornati live all'arrivo di ogni nuova lettura via WebSocket senza ricostruire il grafico da zero.
 
 Le finestre modali sono componenti Blade condivisi inclusi nel layout base. Le operazioni all'interno dei modali (salvataggio condizioni, note, aspetto) usano tutte chiamate AJAX con feedback toast, senza redirect.
+
+_Vedi [[Laravel pipeline realtime frontend]] e [[Laravel infrastruttura frontend]]
 
 ---
 ### Temi

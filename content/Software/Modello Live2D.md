@@ -19,6 +19,8 @@ L'architettura dell'integrazione si articola in tre punti chiave:
     
 3. **Disaccoppiamento del rendering:** Poiché il caricamento dei file di un modello Live2D richiede qualche istante, nell'interfaccia è stato inserito uno _skeleton_ di caricamento gestito da DaisyUI. Non appena l'SDK termina l'inizializzazione del modello, il canvas passa in modo fluido da trasparente a visibile tramite una transizione CSS, evitando sgradevoli scatti grafici.
 
+Vedi i dettagli in [[Live2d plant viewer]]
+
 ---
 ## Stati e Comportamenti del Modello
 La caratteristica fondamentale di questa implementazione è che il modello Live2D è un vero e proprio specchio dello stato del dispositivo IoT e dell'interazione dell'utente. I comportamenti sono gestiti manipolando direttamente i parametri interni del modello (`setParameterValueById`) o attivando delle animazioni (_motions_).
