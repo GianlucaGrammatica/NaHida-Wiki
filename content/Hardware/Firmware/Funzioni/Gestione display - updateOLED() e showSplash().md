@@ -1,5 +1,5 @@
 ### `updateOLED()` e `showSplash()`
-Funzione del firmware • [[Codice Sorgente]] - [[Hardware e Firmware ESP]]
+Funzione del firmware • [[Codice Sorgente - Firmware]] - [[Hardware e Firmware ESP]]
 
 ```cpp
 void updateOLED(bool isOnline) {

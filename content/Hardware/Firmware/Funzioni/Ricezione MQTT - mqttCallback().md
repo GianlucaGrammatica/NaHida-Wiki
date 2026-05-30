@@ -1,5 +1,5 @@
 ### `mqttCallback()`
-Funzione del firmware • [[Codice Sorgente]] - [[Hardware e Firmware ESP]]
+Funzione del firmware • [[Codice Sorgente - Firmware]] - [[Hardware e Firmware ESP]]
 
 ```cpp
 void mqttCallback(char* topic, const byte* payload, unsigned int length) {
