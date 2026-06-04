@@ -72,15 +72,15 @@ export default {
       home: "Ritorna alla home page",
     },
     folderContent: {
-      folder: "Cartella",
+      folder: "Sezione",
       itemsUnderFolder: ({ count }) =>
-        count === 1 ? "1 oggetto in questa cartella." : `${count} oggetti in questa cartella.`,
+        count === 1 ? "1 articolo in questa cartella." : `${count} articoli in questa cartella.`,
     },
     tagContent: {
       tag: "Etichetta",
       tagIndex: "Indice etichette",
       itemsUnderTag: ({ count }) =>
-        count === 1 ? "1 oggetto con questa etichetta." : `${count} oggetti con questa etichetta.`,
+        count === 1 ? "1 articolo con questa etichetta." : `${count} articoli con questa etichetta.`,
       showingFirst: ({ count }) => (count === 1 ? "Prima etichetta." : `Prime ${count} etichette.`),
       totalTags: ({ count }) =>
         count === 1 ? "Trovata 1 etichetta in totale." : `Trovate ${count} etichette totali.`,

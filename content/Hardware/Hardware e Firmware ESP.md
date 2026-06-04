@@ -18,6 +18,8 @@ Data la complessità e la varietà dei moduli impiegati, lo schema elettrico è 
 |**GND**|Massa Comune|Power|Riferimento di massa comune per tutti i componenti del circuito.|
 
 >**Nota sui collegamenti audio:** Il DFPlayer Mini pilota direttamente lo speaker da 0.5W 8Ω tramite i pin dedicati `SPK_1` (positivo) e `SPK_2` (negativo).
+
+![[NaHida_Picture_2.jpg]]
 ## Componentistica e Scelte Tecniche
 L'infrastruttura hardware è stata selezionata per garantire affidabilità nella lettura dei dati e un'interazione utente immersiva:
 - **ESP8266 (NodeMCU):** Microcontrollore principale scelto per il modulo WiFi integrato e l'adeguato numero di pin GPIO, ideale per progetti IoT a basso costo.
@@ -48,3 +50,7 @@ Il firmware si iscrive a due topic principali per la ricezione di dati dal serve
   Riceve un payload JSON dal server contenente l'aggiornamento dei parametri ottimali. Il firmware decodifica il messaggio, aggiorna la struttura dati in RAM e persiste immediatamente i nuovi valori nella EEPROM.
 - `device/{TOKEN}/updates`: 
   Topic utilizzato per l'invio bidirezionale. Il dispositivo pubblica qui i dati telemetrici e l'evento di annaffiatura manuale (attivato tramite debounce software sul pulsante fisico). Dal server riceve comandi operativi, come l'istruzione per avviare la riproduzione di specifiche tracce audio (`PLAY_MUSIC`).
+### Codice sorgente
+Per approfondire il codice sorgente del firmware vedi
+- [[Codice Sorgente - Firmware]]
+- [[Funzioni/]]

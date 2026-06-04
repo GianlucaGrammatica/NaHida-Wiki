@@ -1,4 +1,4 @@
-Il database è MySQL. Le tabelle di seguito sono quelle create e gestite direttamente dal progetto. Laravel genera e utilizza autonomamente anche altre tabelle di servizio: `sessions`, `cache`, `cache_locks`, `jobs`, `job_batches` e `failed_jobs`.
+In locale il progetto usa **MySQL** (tramite XAMPP). Le tabelle di seguito sono quelle create e gestite direttamente dal progetto. Laravel genera e utilizza autonomamente anche altre tabelle di servizio: `sessions`, `cache`, `cache_locks`, `jobs`, `job_batches` e `failed_jobs`.
 
 ### `users`
 
@@ -24,22 +24,24 @@ Contiene le piante registrate da ogni utente, con le condizioni ottimali e le op
 |`user_id`|bigint unsigned|FK → `users`|
 |`plant_name`|varchar(255)||
 |`notes`|text|Nullable|
-|`hum_min`|double|Umidità aria minima (%)|
-|`hum_max`|double|Umidità aria massima (%)|
-|`temp_min`|double|Temperatura minima (°C)|
-|`temp_max`|double|Temperatura massima (°C)|
-|`soil_hum_min`|double|Umidità suolo minima (%)|
-|`soil_hum_max`|double|Umidità suolo massima (%)|
-|`lux_min`|double|Luminosità minima (lx), nullable|
-|`lux_max`|double|Luminosità massima (lx), nullable|
-|`lum_preference`|enum|`low`, `medium`, `high`, `direct` — nullable|
+|`hum_min`|float|Umidità aria minima (%)|
+|`hum_max`|float|Umidità aria massima (%)|
+|`temp_min`|float|Temperatura minima (°C)|
+|`temp_max`|float|Temperatura massima (°C)|
+|`soil_hum_min`|float|Umidità suolo minima (%)|
+|`soil_hum_max`|float|Umidità suolo massima (%)|
+|`lux_min`|float|Luminosità minima (lx), nullable, default 0|
+|`lux_max`|float|Luminosità massima (lx), nullable, default 100000|
+|`lum_preference`|enum|Valori: `low`, `medium`, `high`, `direct`. Nullable|
 |`watering_cycle`|int|Ore tra un'annaffiatura e la successiva|
-|`plant_variant`|varchar(255)|Indice variante grafica del modello|
-|`plant_color`|varchar(255)|Indice colore pianta|
-|`flower_color`|varchar(255)|Indice colore fiori|
-|`pot_color`|varchar(255)|Indice colore vaso|
+|`plant_variant`|varchar(255)|Indice variante grafica (0–7). Salvata come stringa, il model la casta a intero in lettura|
+|`plant_color`|varchar(255)|Indice colore pianta (0–5). Salvata come stringa, il model la casta a intero in lettura|
+|`flower_color`|varchar(255)|Indice colore fiori (0–6). Salvata come stringa, il model la casta a intero in lettura|
+|`pot_color`|varchar(255)|Indice colore vaso (0–2). Salvata come stringa, il model la casta a intero in lettura|
 |`created_at`|timestamp||
 |`updated_at`|timestamp||
+
+> **Nota:** `lux_min` e `lux_max` sono state aggiunte in una seconda migration (`2026_05_24_150214_add_lux_to_plants_table`), separata dalla creazione della tabella.
 
 ### `devices`
 
@@ -48,11 +50,13 @@ Associa un dispositivo fisico ESP8266 a una pianta. Un dispositivo è identifica
 |Colonna|Tipo|Note|
 |---|---|---|
 |`device_id`|bigint unsigned|Chiave primaria|
-|`plant_id`|bigint unsigned|FK → `plants`, nullable|
+|`plant_id`|bigint unsigned|FK → `plants`, nullable (il device può esistere senza pianta associata)|
 |`device_token`|varchar(255)|Unico, corrisponde a `DEVICE_TOKEN` nel firmware|
 |`last_seen_at`|timestamp|Aggiornato a ogni messaggio ricevuto, nullable|
 |`created_at`|timestamp||
 |`updated_at`|timestamp||
+
+> **Comportamento on delete:** quando una pianta viene eliminata, `plant_id` diventa `NULL` invece di eliminare il device (`nullOnDelete`). Al contrario, quando un utente viene eliminato, tutte le sue piante vengono eliminate a cascata (`cascadeOnDelete`), trascinando con sé anche i device, le letture e gli eventi.
 
 ### `sensor_readings`
 
@@ -62,10 +66,10 @@ Ogni lettura periodica inviata dal dispositivo viene salvata qui. Non ha timesta
 |---|---|---|
 |`reading_id`|bigint unsigned|Chiave primaria|
 |`plant_id`|bigint unsigned|FK → `plants`|
-|`humidity`|double|Umidità aria (%)|
-|`temperature`|double|Temperatura (°C)|
-|`soil_humidity`|double|Umidità suolo (%)|
-|`luminosity`|double|Luminosità (lx), nullable|
+|`humidity`|float|Umidità aria (%)|
+|`temperature`|float|Temperatura (°C)|
+|`soil_humidity`|float|Umidità suolo (%)|
+|`luminosity`|float|Luminosità (lx), nullable|
 |`recorded_at`|timestamp|Orario della lettura|
 
 ### `watering_events`
@@ -77,4 +81,6 @@ Registra ogni annaffiatura, distinguendo se è avvenuta tramite il bottone fisic
 |`watering_id`|bigint unsigned|Chiave primaria|
 |`plant_id`|bigint unsigned|FK → `plants`|
 |`watered_at`|timestamp|Orario dell'annaffiatura|
-|`source`|enum|`button`, `manual_app`, `scheduled`|
+|`source`|enum|Valori: `button`, `manual_app`, `scheduled`|
+
+> **Nota:** `watering_events` non ha `updated_at` né `created_at` (il model dichiara `public $timestamps = false`). `watered_at` viene impostato automaticamente dall'hook `booted()` del model se non fornito esplicitamente.
