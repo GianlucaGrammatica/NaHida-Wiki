@@ -89,28 +89,6 @@ QoS 0 e retain false: la riproduzione musicale non è critica, se il messaggio v
 `source` accetta `-1` come valore speciale per fermare la riproduzione. Valori da 1 in su corrispondono ai numeri di traccia sulla SD card del DFPlayer.
 
 ---
-## `toggleLed()`
-
-```php
-public function toggleLed(Request $request): JsonResponse
-{
-    $request->validate([
-        'action'       => 'required|in:ON,OFF',
-        'device_token' => 'required|string|exists:devices,device_token',
-    ]);
-
-    $action = $request->input('action');
-    $token  = $request->input('device_token');
-
-    MQTT::connection()->publish("device/{$token}", $action, 0, false);
-
-    return response()->json(['status' => "LED {$action} inviato"]);
-}
-```
-
-A differenza di `sendConfig` e `sendMusic`, questo endpoint pubblica sul topic base `device/{TOKEN}` senza suffisso. È una funzione di test/debug accessibile dalla pagina `test.blade.php` del progetto. Il payload è la stringa plain `"ON"` o `"OFF"`, non JSON.
-
----
 ## `getStatus()`
 
 ```php

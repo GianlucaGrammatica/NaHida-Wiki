@@ -1,9 +1,11 @@
 # Laravel: PlantsController
+
 `app/Http/Controllers/PlantsController.php`
 
 Gestisce tutte le operazioni sulle piante: visualizzazione, creazione, aggiornamento, annaffiatura manuale, storico e lettura più recente. La maggior parte degli endpoint restituisce JSON per essere chiamati via AJAX dal frontend, a eccezione di `index`, `show`, `create` e `store` che gestiscono pagine Blade.
 
 ---
+
 ## `index()` e `show()`
 
 ```php
@@ -36,13 +38,14 @@ public function show(Request $request, int $id): View
 }
 ```
 
-Entrambi usano eager loading con una closure che limita le letture caricate: `index` prende solo l'ultima lettura per ogni pianta (per i badge di stato nella lista), `show` prende le ultime 50 (per alimentare i grafici Chart.js). Senza il `limit`, Eloquent caricherebbe tutta la tabella `sensor_readings` per ogni pianta.
+Entrambi usano eager loading con una closure che limita le letture caricate: `index` prende solo l'ultima lettura per ogni pianta (per i badge di stato nella lista), `show` prende le ultime 50 (per alimentare i grafici Chart.js). Senza il `limit`, Eloquent caricherebbe tutta la tabella `sensor_readings` per ogni pianta, con conseguenze pesanti se le letture sono migliaia.
 
-La verifica di ownership `Plant::where('user_id', ...)` è presente in ogni query prima del `findOrFail`: se un utente tenta di accedere a una pianta che non è sua, ottiene un 404 invece di un 403, evitando di rivelare l'esistenza di quella risorsa.
+La verifica di ownership `Plant::where('user_id', ...)` è presente in ogni query prima del `findOrFail`: se un utente tenta di accedere a una pianta che non è sua, ottiene un 404 invece di un 403. Il 404 è preferibile perché non conferma nemmeno l'esistenza della risorsa.
 
-`renderPage()` è un helper globale definito in `routes/functions.php` che unifica il passaggio dei dati alle view, serializza i parametri nel meta tag `params` per il JavaScript e aggiunge la versione dell'app. Vedi [[Laravel: Infrastruttura Frontend]].
+`renderPage()` è un helper globale definito in `routes/functions.php` che unifica il passaggio dei dati alle view, serializza i parametri nel meta tag `params` per il JavaScript e aggiunge la versione dell'app. Vedi [[Laravel infrastruttura frontend]].
 
 ---
+
 ## `create()` e `store()`
 
 ```php
@@ -66,6 +69,7 @@ public function store(StorePlantRequest $request): RedirectResponse
 ```
 
 `store()` usa `StorePlantRequest` per la validazione: le regole stanno nella Form Request invece che nel controller, tenendo il metodo pulito. Lo spread `...$request->validated()` unisce i campi validati con `user_id` prima di passarli a `create()`. `user_id` viene aggiunto qui e non esposto nel form, così non può essere falsificato dal client.
+
 ### StorePlantRequest
 
 ```php
@@ -91,9 +95,12 @@ public function rules(): array
 
 La regola `gte:hum_min` su `hum_max` è una cross-field validation: Laravel confronta il valore di `hum_max` con quello di `hum_min` nello stesso request, garantendo che il massimo sia sempre maggiore o uguale al minimo senza scrivere logica custom.
 
-I campi dell'aspetto usano `sometimes` o `nullable`: non sono obbligatori alla creazione, vengono generati casualmente dal frontend se assenti.
+I campi dell'aspetto usano `sometimes` o `nullable`: non sono obbligatori alla creazione, e possono essere omessi se il frontend li genera casualmente.
+
+> **Nota:** `plant_variant` è validato come `integer` in `StorePlantRequest`, mentre `plant_color`, `flower_color` e `pot_color` sono validati come `string max:20`. Questo perché le colonne a database sono dichiarate `varchar`; il model le casta a intero in lettura ma le salva come stringa. In `update()` invece tutti e quattro i campi vengono validati come interi con range espliciti (vedi sotto): la coerenza sarebbe migliore se anche `StorePlantRequest` usasse la stessa regola.
 
 ---
+
 ## `update()`
 
 ```php
@@ -111,6 +118,8 @@ public function update(Request $request, int $id): JsonResponse
         'soil_hum_min'   => ['sometimes', 'numeric', 'min:0', 'max:100'],
         'soil_hum_max'   => ['sometimes', 'numeric', 'min:0', 'max:100', 'gte:soil_hum_min'],
         'watering_cycle' => ['sometimes', 'integer', 'min:1'],
+        'lux_min'        => ['sometimes', 'numeric', 'min:0'],
+        'lux_max'        => ['sometimes', 'numeric', 'min:0', 'gte:lux_min'],
         'plant_variant'  => ['sometimes', 'nullable', 'integer', 'min:0', 'max:7'],
         'plant_color'    => ['sometimes', 'nullable', 'integer', 'min:0', 'max:5'],
         'flower_color'   => ['sometimes', 'nullable', 'integer', 'min:0', 'max:6'],
@@ -125,11 +134,20 @@ public function update(Request $request, int $id): JsonResponse
 
 Questo endpoint gestisce aggiornamenti parziali tramite PATCH: la regola `sometimes` significa che il campo viene validato solo se è presente nel request. In questo modo il frontend può inviare solo i campi modificati (es. solo `notes`, o solo i campi aspetto) senza dover mandare l'intera pianta ogni volta.
 
-`$plant->fresh()` ricarica il record dal database dopo l'update e lo include nella risposta: il frontend usa questi dati per aggiornare `window.PLANT_DATA` in memoria senza ricaricare la pagina.
+`lux_min` e `lux_max` sono inclusi tra i campi aggiornabili: vengono inviati dal modal Condizioni tramite il select "Esigenza di luce", che mappa tre preset (poca/media/tanta luce) su range di lux predefiniti e li spedisce come campi nascosti nel payload PATCH.
 
-Questo endpoint viene chiamato da tre modali diversi nella pagina dettaglio pianta: il modal delle condizioni ottimali, il modal delle note, e il modal dell'aspetto. Mandano payload diversi ma usano tutti lo stesso endpoint PATCH.
+`$plant->fresh()` ricarica il record dal database dopo l'update e lo include nella risposta: il frontend usa questi dati per aggiornare `window.PLANT_DATA` in memoria senza ricaricare la pagina, mantenendo sincronizzati i range ottimali usati per colorare i badge dei sensori.
+
+Questo endpoint viene chiamato da tre modali diversi nella pagina dettaglio pianta, ognuno con un payload diverso:
+
+- Modal **Condizioni ottimali**: invia i range di temperatura, umidità, suolo, lux e il ciclo di annaffiatura.
+- Modal **Note**: invia solo `notes`.
+- Modal **Aspetto**: invia `plant_name` e i quattro indici di personalizzazione.
+
+Tutti e tre usano lo stesso endpoint PATCH, tenendo il backend snello a scapito di un accoppiamento implicito tra frontend e backend.
 
 ---
+
 ## `water()`
 
 ```php
@@ -146,11 +164,12 @@ public function water(Request $request, int $id): JsonResponse
 }
 ```
 
-Crea un `WateringEvent` con `source: 'manual_app'` per distinguerlo dalle annaffiature registrate dal bottone fisico (`source: 'button'`). Non viene emesso nessun evento Reverb perché l'aggiornamento del timer e l'animazione Live2D vengono gestiti direttamente dal frontend sul callback della chiamata AJAX, senza passare per il WebSocket.
+Crea un `WateringEvent` con `source: 'manual_app'` per distinguerlo dalle annaffiature registrate dal bottone fisico (`source: 'button'`). Non viene emesso nessun evento Reverb: l'aggiornamento del timer "prossima annaffiatura" e l'animazione Live2D (`PlantViewer.playWatering()`) vengono gestiti direttamente dal frontend sul callback della chiamata AJAX, senza passare per il WebSocket.
 
-`watered_at` non viene passato a `create()`: il model ha un hook `booted()` che lo imposta a `now()`.
+`watered_at` non viene passato a `create()`: il model ha un hook `booted()` che lo imposta a `now()` automaticamente al momento della creazione, allo stesso modo in cui `recorded_at` funziona in `SensorReading`.
 
 ---
+
 ## `history()`
 
 ```php
@@ -221,13 +240,16 @@ public function history(Request $request, int $id): JsonResponse
 
 `history()` è la funzione più complessa del controller. Costruisce una timeline mista fondendo due sorgenti di dati eterogenee: annaffiature e letture anomale.
 
-Le due collection vengono costruite separatamente con `take(30)` e `take(60)` per limitare il volume di dati caricati dal database. I warning vengono filtrati in PHP dopo il caricamento invece che in SQL: una query con `WHERE` sulle colonne di range richiederebbe un join con la tabella `plants` e renderebbe la query molto più complessa. Con 60 letture è comunque veloce.
+Le due collection vengono costruite separatamente con `take(30)` e `take(60)` per limitare il volume di dati caricati dal database. I warning vengono filtrati in PHP dopo il caricamento invece che in SQL: una query con `WHERE` sui range richiederebbe un join con la tabella `plants` per confrontare le colonne, rendendo la query sensibilmente più complessa. Con 60 letture il filtro in memoria è trascurabile.
 
-Dopo il merge con `concat()`, la collection viene riordinata per data (`sortByDesc('date')`), troncata a 30 eventi totali e poi il campo `date` viene rimosso dalla risposta finale con `collect($ev)->except('date')`. Il campo `date` serve solo come chiave di ordinamento ed è un oggetto Carbon che non si serializza bene in JSON, quindi viene tolto prima di restituire la risposta.
+La funzione `match` su `source` è un'espressione switch tipata: a differenza di `switch`, non ha fall-through implicito e garantisce un valore di ritorno, quindi si può usare direttamente dentro `map()`.
+
+Dopo il merge con `concat()`, la collection viene riordinata per data (`sortByDesc('date')`), troncata a 30 eventi totali e poi il campo `date` viene rimosso dalla risposta finale con `collect($ev)->except('date')`. Il campo `date` serve solo come chiave di ordinamento ed è un oggetto Carbon, che non si serializza correttamente in JSON. Viene tenuto nella collection PHP durante il sort e rimosso prima di restituire la risposta.
 
 Il campo `detail` è `null` quando c'è un solo problema, e contiene la lista di tutti i problemi separati da virgola quando ce ne sono più di uno. Il frontend mostra `detail` come riga aggiuntiva sotto il `label` principale.
 
 ---
+
 ## `latestReading()`
 
 ```php
@@ -255,6 +277,8 @@ public function latestReading(Request $request, int $id): JsonResponse
 }
 ```
 
-Endpoint di fallback per il polling AJAX: viene chiamato dal frontend ogni 15 secondi se la connessione WebSocket non ha ricevuto aggiornamenti recenti. Restituisce solo la lettura più recente, non l'intera collection.
+Endpoint di fallback per il polling AJAX: viene chiamato dal frontend ogni 15 secondi, ma solo se la connessione WebSocket non ha ricevuto aggiornamenti negli ultimi 20 secondi (`window._lastEchoUpdate`). In presenza di una connessione Reverb attiva e funzionante il polling non parte mai; entra in gioco solo in caso di assenza o disconnessione del WebSocket.
 
-> Nota: in `routes/web.php` questa route è definita fuori dal gruppo middleware `auth`. Il metodo internamente chiama `$request->user()->user_id`, quindi una chiamata non autenticata genererebbe un errore 500 invece di un 401. In un sistema produttivo andrebbe spostata dentro il gruppo `auth`.
+Restituisce solo la lettura più recente in un formato piatto: il frontend lo usa per aggiornare i badge dei sensori, il badge salute e lo stato del modello Live2D, esattamente come farebbe con un evento `SensorUpdated` via Echo.
+
+> **Attenzione:** in `routes/web.php` questa route è definita fuori dal gruppo middleware `auth`. Il metodo chiama internamente `$request->user()->user_id`, quindi una richiesta non autenticata genererebbe un errore 500 invece di un 401. In un sistema produttivo andrebbe spostata dentro il gruppo `auth`.

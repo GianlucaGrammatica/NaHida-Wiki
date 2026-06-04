@@ -2,6 +2,8 @@
 
 > Progetto IoT per il monitoraggio intelligente delle piante, sviluppato da Colombara e Grammatica.
 
+![[NaHida_Logo.png]]
+
 ---
 
 ## Stack tecnologico
@@ -49,11 +51,11 @@
 - [[Live2d plant viewer]]: Singleton IIFE, tick loop, parametri Cubism, setState, capturePreview
 
 ### Modello Live2D
-- [[Modello Live2D]] — cos'è Live2D, integrazione tecnica, stati e comportamenti
+- [[Modello Live2D]]: cos'è Live2D, integrazione tecnica, stati e comportamenti
 
 ### Deploy e Sicurezza
-- [[Deploy dockerfile]] — build multi-stage, concurrently, hosting Render + Supabase
-- [[Sicurezza]] — bcrypt, rate limiting, CSRF, ownership risorse, TLS MQTT, validazione input
+- [[Deploy dockerfile]]: build multi-stage, concurrently, hosting Render + Supabase
+- [[Sicurezza]]: bcrypt, rate limiting, CSRF, ownership risorse, TLS MQTT, validazione input
 
 ---
 
