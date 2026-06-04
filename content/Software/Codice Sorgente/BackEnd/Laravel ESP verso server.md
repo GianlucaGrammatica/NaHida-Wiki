@@ -178,7 +178,7 @@ Il topic `/updates` è bidirezionale (l'ESP pubblica qui sia la telemetria che i
 }
 ```
 
-`WateringEvent::create()` non riceve `watered_at`: anche qui il model ha un hook `booted()` che lo imposta a `now()`. Il campo `source` viene impostato a `'button'` per distinguere questa annaffiatura da quelle registrate manualmente dall'app o programmate. Vedi [[Database]] per l'enum completo.
+`WateringEvent::create()` non riceve `watered_at`: anche qui il model ha un hook `booted()` che lo imposta a `now()`. Il campo `source` viene impostato a `'button'` per distinguere questa annaffiatura da quelle registrate manualmente dall'app o programmate. Vedi [[NaHida/Wiki/Software/Database]] per l'enum completo.
 
 ---
 ## SensorUpdated
